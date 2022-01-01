@@ -151,6 +151,7 @@ class _HomeState extends State<Home> {
                     borderRadius: BorderRadius.circular(15),
                   ),
                   child: TextField(
+                    onChanged: onSearch,
                     decoration: InputDecoration(
                       border: InputBorder.none,
                       prefixIcon: Icon(
@@ -197,15 +198,20 @@ class _HomeState extends State<Home> {
 
   renderHomesNearby() {
     // return ListView();
+    List<HomeModel>? housesToShow = filter.isEmpty
+        ? houses
+        : houses?.where((house) {
+            return house.location!.toLowerCase().contains(filter.toLowerCase());
+          }).toList();
     return Container(
       height: 260,
       margin: EdgeInsets.only(top: 20),
       child: ListView.builder(
           scrollDirection: Axis.horizontal,
           shrinkWrap: true,
-          itemCount: houses?.length,
+          itemCount: housesToShow?.length,
           itemBuilder: (context, index) {
-            return HomeCard(houses?[index] as HomeModel);
+            return HomeCard(housesToShow?[index] as HomeModel);
           }),
     );
   }
@@ -238,5 +244,12 @@ class _HomeState extends State<Home> {
             )),
       ),
     );
+  }
+
+  onSearch(value) {
+    if (houses != null)
+      setState(() {
+        filter = value;
+      });
   }
 }
