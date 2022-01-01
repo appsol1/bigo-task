@@ -1,5 +1,7 @@
 import 'package:bigo_task/components/home_card.dart';
 import 'package:bigo_task/globals.dart';
+import 'package:bigo_task/models/HomeModel.dart';
+import 'package:bigo_task/services/api.dart';
 import 'package:flutter/material.dart';
 
 class Home extends StatefulWidget {
@@ -9,10 +11,23 @@ class Home extends StatefulWidget {
 
 class _HomeState extends State<Home> {
   String filter = '';
+  List<HomeModel>? houses;
 
   @override
   void initState() {
     super.initState();
+    _populateData();
+  }
+
+  _populateData() async {
+    try {
+      var tmp = await ApiService.fetchHouses();
+      setState(() {
+        houses = tmp;
+      });
+    } catch (e) {
+      print(e);
+    }
   }
 
   @override
@@ -29,44 +44,47 @@ class _HomeState extends State<Home> {
         child: Scaffold(
             backgroundColor: Colors.transparent,
             body: SafeArea(
-              child: Stack(children: [
-                SingleChildScrollView(
-                  child: Column(
-                    children: [
-                      renderTopPortion(),
-                      Container(
-                        alignment: Alignment.centerLeft,
-                        margin: EdgeInsets.only(top: 30, left: 20),
-                        child: Text(
-                          globals.t('homesNearby'),
-                          style: TextStyle(fontSize: 20),
+              child: houses == null
+                  ? Center(child: CircularProgressIndicator())
+                  : Stack(children: [
+                      SingleChildScrollView(
+                        child: Column(
+                          children: [
+                            renderTopPortion(),
+                            Container(
+                              alignment: Alignment.centerLeft,
+                              margin: EdgeInsets.only(top: 30, left: 20),
+                              child: Text(
+                                globals.t('homesNearby'),
+                                style: TextStyle(fontSize: 20),
+                              ),
+                            ),
+                            renderHomesNearby(),
+                            Container(
+                              alignment: Alignment.centerLeft,
+                              margin: EdgeInsets.only(top: 30, left: 20),
+                              child: Text(
+                                globals.t('trending'),
+                                style: TextStyle(fontSize: 20),
+                              ),
+                            ),
+                            renderHomesNearby()
+                          ],
                         ),
                       ),
-                      renderHomesNearby(),
-                      Container(
-                        alignment: Alignment.centerLeft,
-                        margin: EdgeInsets.only(top: 30, left: 20),
-                        child: Text(
-                          globals.t('trending'),
-                          style: TextStyle(fontSize: 20),
-                        ),
-                      ),
-                      renderHomesNearby()
-                    ],
-                  ),
-                ),
-                Positioned(
-                    left: -43,
-                    top: 160,
-                    child: RotationTransition(
-                      turns: AlwaysStoppedAnimation(55 / 360),
-                      child: Container(
-                        width: 60,
-                        height: 60,
-                        decoration: BoxDecoration(color: globals.secondryColor, borderRadius: BorderRadius.circular(5)),
-                      ),
-                    ))
-              ]),
+                      Positioned(
+                          left: -43,
+                          top: 160,
+                          child: RotationTransition(
+                            turns: AlwaysStoppedAnimation(55 / 360),
+                            child: Container(
+                              width: 60,
+                              height: 60,
+                              decoration:
+                                  BoxDecoration(color: globals.secondryColor, borderRadius: BorderRadius.circular(5)),
+                            ),
+                          ))
+                    ]),
             )));
   }
 
@@ -91,7 +109,7 @@ class _HomeState extends State<Home> {
                     mainAxisSize: MainAxisSize.min,
                     children: [
                       Text(
-                        'Warsaw',
+                        'Lahore, Pakistan',
                         style: TextStyle(fontSize: 20, fontWeight: FontWeight.bold, color: globals.appMainColor),
                       ),
                       SizedBox(
@@ -180,14 +198,14 @@ class _HomeState extends State<Home> {
   renderHomesNearby() {
     // return ListView();
     return Container(
-      height: 270,
+      height: 260,
       margin: EdgeInsets.only(top: 20),
       child: ListView.builder(
           scrollDirection: Axis.horizontal,
           shrinkWrap: true,
-          itemCount: 1,
+          itemCount: houses?.length,
           itemBuilder: (context, index) {
-            return HomeCard();
+            return HomeCard(houses?[index] as HomeModel);
           }),
     );
   }

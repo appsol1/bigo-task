@@ -1,14 +1,20 @@
 import 'package:bigo_task/globals.dart';
+import 'package:bigo_task/models/HomeModel.dart';
 import 'package:flutter/material.dart';
 
 class HomeCard extends StatelessWidget {
-  var imgSrc =
-      "https://www.development-q5nzhaa-sb26hc2y3xm26.uk-1.platformsh.site/uploads/thumbnail_pexels_photo_106399_261e005913.jpeg";
+  HomeModel homeModel;
+
+  HomeCard(this.homeModel);
 
   @override
   Widget build(BuildContext context) {
+    var imgSrc = homeModel.getImageUrl();
+    // "https://www.development-q5nzhaa-sb26hc2y3xm26.uk-1.platformsh.site/uploads/thumbnail_pexels_photo_106399_261e005913.jpeg";
+
     return Container(
-      width: 250,
+      width: 230,
+      margin: EdgeInsets.symmetric(horizontal: 10),
       clipBehavior: Clip.hardEdge,
       decoration: BoxDecoration(
           color: Colors.white,
@@ -21,11 +27,19 @@ class HomeCard extends StatelessWidget {
             children: [
               /*Positioned.fill(
                 child:*/
-              Image.network(
-                imgSrc,
-                width: double.infinity,
-                fit: BoxFit.cover,
-              ),
+              imgSrc.isEmpty
+                  ? ColoredBox(
+                      color: globals.secondryColor,
+                      child: SizedBox(
+                        width: double.infinity,
+                        height: 150,
+                      ))
+                  : Image.network(
+                      imgSrc,
+                      // imgSrc,
+                      width: double.infinity,
+                      fit: BoxFit.cover,
+                    ),
               /*),*/
               Positioned(
                   top: 5,
@@ -54,11 +68,11 @@ class HomeCard extends StatelessWidget {
               crossAxisAlignment: CrossAxisAlignment.center,
               children: [
                 Text(
-                  '\$499,000',
+                  homeModel.price as String,
                   style: TextStyle(color: globals.appMainColor, fontSize: 20, fontWeight: FontWeight.bold),
                 ),
                 SizedBox(width: 15),
-                Text('3 hours ago', style: TextStyle(color: globals.grayColor))
+                Text(homeModel.getTimeDiff(), style: TextStyle(color: globals.grayColor))
               ],
             ),
           ),
@@ -69,7 +83,7 @@ class HomeCard extends StatelessWidget {
               children: [
                 Icon(Icons.place_outlined, color: globals.grayColor, size: 18),
                 Text(
-                  'ul. Solec 46, Warsaw, Poland',
+                  homeModel.location!,
                   style: TextStyle(color: globals.grayColor),
                 )
               ],
@@ -98,7 +112,7 @@ class HomeCard extends StatelessWidget {
                   crossAxisAlignment: WrapCrossAlignment.center,
                   children: [
                     Icon(Icons.king_bed_outlined, color: globals.grayColor, size: 18),
-                    Text('3', style: TextStyle(color: globals.grayColor, fontWeight: FontWeight.bold))
+                    Text(homeModel.beds!, style: TextStyle(color: globals.grayColor, fontWeight: FontWeight.bold))
                   ],
                 ),
                 SizedBox(width: 10),
@@ -107,7 +121,7 @@ class HomeCard extends StatelessWidget {
                   crossAxisAlignment: WrapCrossAlignment.center,
                   children: [
                     Icon(Icons.bathtub_outlined, color: globals.grayColor, size: 16),
-                    Text('3', style: TextStyle(color: globals.grayColor, fontWeight: FontWeight.bold))
+                    Text(homeModel.baths!, style: TextStyle(color: globals.grayColor, fontWeight: FontWeight.bold))
                   ],
                 )
               ],

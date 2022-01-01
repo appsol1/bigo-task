@@ -9,7 +9,7 @@ class Globals {
   final secondryColor = Color(0xFF9587E8);
   final accentColor = Color(0xFFE1ECFE);
   final grayColor = Colors.grey as Color; //Color(0xFFCCCBD1);
-  final apiUrl = "https://www.development-q5nzhaa-sb26hc2y3xm26.uk-1.platformsh.site/";
+  final apiUrl = "https://www.development-q5nzhaa-sb26hc2y3xm26.uk-1.platformsh.site";
   String currLang = "en";
 
   // Not the right place to put strings here but the main aim is
